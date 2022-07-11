@@ -7,11 +7,16 @@ import Control.Monad.State.Lazy
 main :: IO ()
 main = do
   let 
-    fullnameRandomizer = (,) <$> fakeFirstName <*> fakeFamilyName
+    fullnameRandomizer = (,,,,) 
+      <$> fakeFirstName
+      <*> fakeFamilyName
+      <*> fakeHouseNumber
+      <*> fakeStreetName
+      <*> fakeStateName
   g <- newStdGen
-  ((fname, lname), _nextG) <- runFake fullnameRandomizer g
+  ((fname, lname, number, streetName, stateName), _nextG) <- runFake fullnameRandomizer g
 
-  putStrLn $ fname <> " " <> lname
+  putStrLn $ fname <> " " <> lname <> " living at " <> number <> " " <> streetName <> " " <> stateName
 
 
 newtype Fake a = Fake
@@ -35,12 +40,24 @@ fakeString :: FilePath -> Fake String
 fakeString p = Fake f
   where
     f gen = do
-      names <- words <$> readFile p
+      names <- lines <$> readFile p
       let
         (num, nextG) = uniformR (0, length names) gen
       pure (names !! num, nextG)
+
+fakeHouseNumber :: Fake String
+fakeHouseNumber = Fake f
+  where
+    f gen = do
+      let
+        (houseNumber, nextG) = uniformR (1 :: Int, 999) gen
+      pure (show houseNumber, nextG)
 
 
 fakeFirstName = fakeString "data/first-names.txt"
 
 fakeFamilyName = fakeString "data/family-names.txt"
+
+fakeStreetName = fakeString "data/street-names.txt"
+
+fakeStateName = fakeString "data/state-names.txt"
