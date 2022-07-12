@@ -31,7 +31,9 @@ instance Functor Fake where
     pure (f r, nextG)
 
 instance Applicative Fake where
-  pure randomizer = undefined
+  pure a = Fake f
+    where
+      f gen = pure (a, gen)
   (Fake randomizer1) <*> (Fake randomizer2) = Fake $ \g -> do
     (f, nextG1) <- randomizer1 g
     (r, nextG2) <- randomizer2 nextG1
