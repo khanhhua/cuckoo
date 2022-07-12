@@ -7,16 +7,24 @@ import Control.Monad.State.Lazy
 main :: IO ()
 main = do
   let 
-    fullnameRandomizer = (,,,,) 
+    fullnameRandomizer = (,,,,,,,) 
       <$> fakeFirstName
       <*> fakeFamilyName
       <*> fakeHouseNumber
       <*> fakeStreetName
       <*> fakeStateName
+      <*> fakePhone "+49" 9
+      <*> fakeJobTitle
+      <*> fakeCompany
   g <- newStdGen
-  ((fname, lname, number, streetName, stateName), _nextG) <- runFake fullnameRandomizer g
+  ((fname, lname, number, streetName, stateName, phone, job, company), _nextG) <- runFake fullnameRandomizer g
 
-  putStrLn $ fname <> " " <> lname <> " living at " <> number <> " " <> streetName <> " " <> stateName
+  putStrLn $ fname
+    <> " " <> lname
+    <> " living at " <> number
+    <> " " <> streetName
+    <> " " <> stateName
+    <> " (" <> phone <> ") working as " <> job <> " for " <> company
 
 
 newtype Fake a = Fake
@@ -53,6 +61,16 @@ fakeHouseNumber = Fake f
         (houseNumber, nextG) = uniformR (1 :: Int, 999) gen
       pure (show houseNumber, nextG)
 
+fakePhone :: String -> Int -> Fake String
+fakePhone prefix n = Fake f
+  where
+    f gen = do
+      let
+        replM :: State StdGen [Int]
+        replM = replicateM n . state $ uniformR (0 :: Int, 9)
+        (xs, nextG) = runState replM gen
+      pure (prefix <> concatMap show xs, nextG)
+
 
 fakeFirstName = fakeString "data/first-names.txt"
 
@@ -61,3 +79,7 @@ fakeFamilyName = fakeString "data/family-names.txt"
 fakeStreetName = fakeString "data/street-names.txt"
 
 fakeStateName = fakeString "data/state-names.txt"
+
+fakeJobTitle = fakeString "data/jobs.txt"
+
+fakeCompany = fakeString "data/companies.txt"
