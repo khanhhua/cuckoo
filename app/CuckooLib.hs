@@ -16,11 +16,11 @@ module CuckooLib (
   fakeEmail
 ) where
 
+import Control.Monad.State.Lazy
 import Data.Char
-import Text.Printf
 import System.Random
 import System.Random.Stateful
-import Control.Monad.State.Lazy
+import Text.Printf
 
 newtype Fake a = Fake
   { runFake :: StdGen -> IO (a, StdGen)

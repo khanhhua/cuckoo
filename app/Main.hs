@@ -2,9 +2,11 @@ module Main where
 
 import Control.Monad.IO.Class
 import Control.Monad.State.Lazy
+import CuckooLib
+    (runFake)
+import CuckooNest
+    (config, cuckooBarrage, cuckooNest)
 import System.Random
-import CuckooLib (runFake)
-import CuckooNest (config, cuckooNest, cuckooBarrage)
 
 
 main :: IO ()

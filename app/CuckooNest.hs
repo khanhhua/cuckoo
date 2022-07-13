@@ -9,7 +9,7 @@ data Cuckoo
 
 instance Show Cuckoo where
     show (CuckooString s) = show s
-    show (CuckooInt i) = show i
+    show (CuckooInt i)    = show i
 
 type Config = (String, Fake Cuckoo)
 
@@ -32,7 +32,7 @@ config = traverse (\(label, cuckooName) -> (label,) <$> lookupCuckooGen cuckooNa
 
 cuckooNest :: [Config] -> Fake [(String, Cuckoo)]
 cuckooNest configs = Fake . runFake $ sequenceA applicatives
-  where 
+  where
     applicatives = map asApplicative configs
 
 

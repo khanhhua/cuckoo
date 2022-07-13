@@ -1,6 +1,7 @@
 cabal-version:      2.4
 name:               cuckoobird
 version:            0.1.0.0
+with-compiler:      ghc-9.2.1
 
 -- A short (one-line) description of the package.
 -- synopsis:
@@ -39,7 +40,7 @@ executable cuckoobird
     other-extensions: OverloadedStrings
     default-extensions: TupleSections
     build-depends:    
-        base ^>=4.16.0.0
+        base >=4.0.0.0
       , mtl ^>=2.2.2
       , random ^>=1.2.1.1
     hs-source-dirs:   app
