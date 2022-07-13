@@ -31,10 +31,13 @@ executable cuckoobird
     main-is:          Main.hs
 
     -- Modules included in this executable, other than Main.
-    -- other-modules:
+    other-modules:
+        CuckooLib
+      , CuckooNest
 
     -- LANGUAGE extensions used by modules in this package.
-    -- other-extensions:
+    other-extensions: OverloadedStrings
+    default-extensions: TupleSections
     build-depends:    
         base ^>=4.16.0.0
       , mtl ^>=2.2.2
