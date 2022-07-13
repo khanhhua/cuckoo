@@ -47,7 +47,7 @@ fakeString p = Fake f
     f gen = do
       names <- lines <$> readFile p
       let
-        (num, nextG) = uniformR (0, length names) gen
+        (num, nextG) = uniformR (0, length names - 1) gen
       pure (names !! num, nextG)
 
 fakeNumber :: (Int, Int) -> Fake String
