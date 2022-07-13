@@ -10,26 +10,45 @@ data Cuckoo
   | CuckooInt Int
   deriving (Show)
 
-cuckooNest :: [( String, Fake Cuckoo )] -> Fake [(String, Cuckoo)]
+type Config = (String, Fake Cuckoo)
+
+asApplicative (attr, faker) = (attr,) <$> faker
+
+tableOfCuckoos :: [(String, Fake Cuckoo)]
+tableOfCuckoos =
+  [ ( "first-name", CuckooString <$> fakeFirstName )
+  , ( "family-name", CuckooString <$> fakeFamilyName )
+  , ( "fullname", CuckooString <$> fakeFullname )
+  , ( "email", CuckooString <$> fakeEmail )
+  ]
+
+lookupCuckooGen = flip lookup tableOfCuckoos
+
+cuckooNest :: [Config] -> Fake [(String, Cuckoo)]
 cuckooNest configs = Fake f
   where 
     f gen = do
       let
-        attrs = map fst configs
-        ms = map snd configs
-      (values, nextG) <- runFake (sequenceA ms) gen
-      pure (zip attrs values, nextG)
+        applicatives = map asApplicative configs
+      (values, nextG) <- runFake (sequenceA applicatives) gen
+      pure (values, nextG)
 
 main :: IO ()
 main = do
   g <- newStdGen
   let
-    firstName = ( "first-name", CuckooString <$> fakeFirstName )
-    lastName  = ( "last-name",  CuckooString <$> fakeFamilyName )
-    email     = ( "email",      CuckooString <$> fakeEmail )
+    -- traverse == sequenceA . map
+    maybeConfigs = traverse (\(label, cuckooName) -> (label,) <$> lookupCuckooGen cuckooName)
+      [ ( "customer", "fullname" )
+      , ( "primary_email", "email" )
+      , ( "secondary_email", "email" )
+      ]
+  case maybeConfigs of
+    Just configs -> do
+      (nest, nextG) <- runFake (cuckooNest configs) g
+      print nest
+    Nothing -> putStrLn "Bad Config"
 
-  (nest, nextG) <- runFake (cuckooNest [firstName, lastName, email]) g
-  print nest
 
 profile :: IO String
 profile = do

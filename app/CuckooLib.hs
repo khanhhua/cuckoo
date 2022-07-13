@@ -5,6 +5,7 @@ module CuckooLib (
   fakePhone,
   fakeFirstName,
   fakeFamilyName,
+  fakeFullname,
   fakeStreetName,
   fakeStateName,
   fakeJobTitle,
@@ -71,6 +72,8 @@ fakePhone prefix n = Fake f
 fakeFirstName = fakeString "data/first-names.txt"
 
 fakeFamilyName = fakeString "data/family-names.txt"
+
+fakeFullname = (\(fname : lname : _) -> fname <> lname ) <$> sequenceA [fakeFirstName, fakeFamilyName]
 
 fakeStreetName = fakeString "data/street-names.txt"
 

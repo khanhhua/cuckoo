@@ -35,9 +35,8 @@ executable cuckoobird
       CuckooLib
 
     -- LANGUAGE extensions used by modules in this package.
-    other-extensions:
-        OverloadedStrings
-      , TupleSections
+    other-extensions: OverloadedStrings
+    default-extensions: TupleSections
     build-depends:    
         base ^>=4.16.0.0
       , mtl ^>=2.2.2
