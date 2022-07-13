@@ -1,15 +1,25 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Main where
+
+import Control.Monad.IO.Class
+import System.Random
+import qualified Data.Text.Lazy as TL
+
+import Web.Scotty
 
 import CuckooLib
     (runFake)
 import CuckooNest
     (config, cuckooBarrage, cuckooNest)
-import System.Random
 
 
 main :: IO ()
-main = do
-  g <- newStdGen
+main = scotty 3000 $ do
+  get "/" randomCuckooNest
+
+
+randomCuckooNest = do
+  g <- liftIO newStdGen
   let
     maybeConfigs = config
       [ ( "customer", "fullname" )
@@ -18,6 +28,6 @@ main = do
       ]
   case maybeConfigs of
     Just configs -> do
-      (nest, nextG) <- runFake (cuckooBarrage configs 5) g
-      print nest
-    Nothing -> putStrLn "Bad Config"
+      (nest, nextG) <- liftIO $ runFake (cuckooBarrage configs 5) g
+      text . TL.pack $ show nest
+    Nothing -> text "Bad Config"
