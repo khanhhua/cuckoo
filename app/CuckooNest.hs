@@ -31,13 +31,9 @@ config = traverse (\(label, cuckooName) -> (label,) <$> lookupCuckooGen cuckooNa
 
 
 cuckooNest :: [Config] -> Fake [(String, Cuckoo)]
-cuckooNest configs = Fake f
+cuckooNest configs = Fake . runFake $ sequenceA applicatives
   where 
-    f gen = do
-      let
-        applicatives = map asApplicative configs
-      (values, nextG) <- runFake (sequenceA applicatives) gen
-      pure (values, nextG)
+    applicatives = map asApplicative configs
 
 
 cuckooBarrage :: [Config] -> Int -> Fake [[(String, Cuckoo)]]
