@@ -1,7 +1,5 @@
 module Main where
 
-import Control.Monad.IO.Class
-import Control.Monad.State.Lazy
 import CuckooLib
     (runFake)
 import CuckooNest
