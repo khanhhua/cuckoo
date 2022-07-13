@@ -96,6 +96,6 @@ fakeEmail = Fake f
       ((fname, river, domain, number), nextG) <- runFake randomizer gen
       pure (printf "%s.%s_%s@%s" (sanitize fname) (sanitize river) number domain, nextG)
 
-    whitelist = not . (`elem` "!@#$%^&*() ")
+    whitelist = not . (`elem` ("!@#$%^&*() " :: String))
     sanitize = map toLower . filter whitelist
     randomizer = (,,,) <$> fakeFirstName <*> fakeRiver <*> fakeDomain <*> fakeNumber (1000, 9999)

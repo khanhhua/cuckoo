@@ -1,16 +1,18 @@
-{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Control.Monad.IO.Class
-import System.Random
-import qualified Data.Text.Lazy as TL
+import           Control.Monad.IO.Class
+import qualified Data.Map                as M
+    (Map, fromList)
+import qualified Data.Text.Lazy          as TL
+import qualified Data.Text.Lazy.Encoding as TL
+import           System.Random
 
 import Web.Scotty
 
 import CuckooLib
     (runFake)
 import CuckooNest
-    (config, cuckooBarrage, cuckooNest)
+    (Cuckoo, CuckooPairs, config, cuckooBarrage, cuckooNest)
 
 
 main :: IO ()
@@ -26,8 +28,12 @@ randomCuckooNest = do
       , ( "primary_email", "email" )
       , ( "secondary_email", "email" )
       ]
+
+    encodeObject :: CuckooPairs -> M.Map String Cuckoo
+    encodeObject = M.fromList
+
   case maybeConfigs of
     Just configs -> do
       (nest, nextG) <- liftIO $ runFake (cuckooBarrage configs 5) g
-      text . TL.pack $ show nest
-    Nothing -> text "Bad Config"
+      json $ map encodeObject nest
+    Nothing -> text $ TL.pack "Bad Config"
