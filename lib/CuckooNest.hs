@@ -1,8 +1,8 @@
 module CuckooNest where
 
-import Data.Aeson
 import Control.Monad.State.Lazy
 import CuckooLib
+import Data.Aeson
 
 data Cuckoo
   = CuckooString String
@@ -10,7 +10,7 @@ data Cuckoo
 
 instance ToJSON Cuckoo where
   toJSON (CuckooString s) = toJSON s
-  toJSON (CuckooInt i) =  toJSON i
+  toJSON (CuckooInt i)    =  toJSON i
 
 instance Show Cuckoo where
     show (CuckooString s) = show s
@@ -29,6 +29,8 @@ tableOfCuckoos =
   , ( "family-name", CuckooString <$> fakeFamilyName )
   , ( "fullname", CuckooString <$> fakeFullname )
   , ( "email", CuckooString <$> fakeEmail )
+  , ( "address", CuckooString <$> fakeAddress )
+  , ( "past-date", CuckooString <$> fakePastDate )
   ]
 
 lookupCuckooGen = flip lookup tableOfCuckoos

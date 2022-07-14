@@ -1,8 +1,9 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 module Main where
 
 import           Control.Monad.IO.Class
 import qualified Data.Map                as M
-    (Map, fromList)
+    (Map, fromList, toList)
 import qualified Data.Text.Lazy          as TL
 import qualified Data.Text.Lazy.Encoding as TL
 import           System.Random
@@ -10,36 +11,31 @@ import           System.Random
 import Web.Scotty
 
 import CuckooLib
-    ( runFake, fakeFullname
-    , fakeAddress, fakeJobTitle, fakeCompany
-    )
+    (fakeAddress, fakeCompany, fakeFullname, fakeJobTitle, runFake)
 import CuckooNest
-    (Cuckoo(..), CuckooPairs, config, cuckooBarrage, cuckooNest)
+    (Cuckoo (..), CuckooPairs, config, cuckooBarrage, cuckooNest)
 
 
 main :: IO ()
 main = scotty 3000 $ do
-  get "/" randomCuckooNest
+  post "/" customGenerator
 
-  get "/profiles" randomProfiles
+  get "/profiles" getProfiles
 
 
-randomCuckooNest = do
+customGenerator = do
+  bodyAsMap :: M.Map String String <- jsonData
   g <- liftIO newStdGen
   let
-    maybeConfigs = config
-      [ ( "customer", "fullname" )
-      , ( "primary_email", "email" )
-      , ( "secondary_email", "email" )
-      ]
+    maybeConfigs = config $ M.toList bodyAsMap
 
   case maybeConfigs of
     Just configs -> do
       (nest, nextG) <- liftIO $ runFake (cuckooBarrage configs 5) g
-      json $ map encodeObject nest
+      jsonEncode nest
     Nothing -> text $ TL.pack "Bad Config"
 
-randomProfiles = do
+getProfiles = do
   g <- liftIO newStdGen
   let
     configs =
@@ -50,8 +46,10 @@ randomProfiles = do
       ]
   (nest, _nextG) <- liftIO $ runFake (cuckooBarrage configs 5) g
 
-  json $ map encodeObject nest
+  jsonEncode nest
 
 
 encodeObject :: CuckooPairs -> M.Map String Cuckoo
 encodeObject = M.fromList
+
+jsonEncode = json . map encodeObject
