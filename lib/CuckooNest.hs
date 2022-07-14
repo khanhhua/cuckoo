@@ -2,16 +2,24 @@ module CuckooNest where
 
 import Control.Monad.State.Lazy
 import CuckooLib
+import Data.Aeson
 
 data Cuckoo
   = CuckooString String
   | CuckooInt Int
 
+instance ToJSON Cuckoo where
+  toJSON (CuckooString s) = toJSON s
+  toJSON (CuckooInt i)    =  toJSON i
+
 instance Show Cuckoo where
     show (CuckooString s) = show s
-    show (CuckooInt i) = show i
+    show (CuckooInt i)    = show i
 
 type Config = (String, Fake Cuckoo)
+
+type CuckooPairs = [(String, Cuckoo)]
+
 
 asApplicative (attr, faker) = (attr,) <$> faker
 
@@ -21,6 +29,8 @@ tableOfCuckoos =
   , ( "family-name", CuckooString <$> fakeFamilyName )
   , ( "fullname", CuckooString <$> fakeFullname )
   , ( "email", CuckooString <$> fakeEmail )
+  , ( "address", CuckooString <$> fakeAddress )
+  , ( "past-date", CuckooString <$> fakePastDate )
   ]
 
 lookupCuckooGen = flip lookup tableOfCuckoos
@@ -30,11 +40,11 @@ config :: [(String, String)] -> Maybe [(String, Fake Cuckoo)]
 config = traverse (\(label, cuckooName) -> (label,) <$> lookupCuckooGen cuckooName)
 
 
-cuckooNest :: [Config] -> Fake [(String, Cuckoo)]
+cuckooNest :: [Config] -> Fake CuckooPairs
 cuckooNest configs = Fake . runFake $ sequenceA applicatives
-  where 
+  where
     applicatives = map asApplicative configs
 
 
-cuckooBarrage :: [Config] -> Int -> Fake [[(String, Cuckoo)]]
+cuckooBarrage :: [Config] -> Int -> Fake [CuckooPairs]
 cuckooBarrage configs n = replicateM n (cuckooNest configs)
