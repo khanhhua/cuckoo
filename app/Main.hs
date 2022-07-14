@@ -10,14 +10,18 @@ import           System.Random
 import Web.Scotty
 
 import CuckooLib
-    (runFake)
+    ( runFake, fakeFullname
+    , fakeAddress, fakeJobTitle, fakeCompany
+    )
 import CuckooNest
-    (Cuckoo, CuckooPairs, config, cuckooBarrage, cuckooNest)
+    (Cuckoo(..), CuckooPairs, config, cuckooBarrage, cuckooNest)
 
 
 main :: IO ()
 main = scotty 3000 $ do
   get "/" randomCuckooNest
+
+  get "/profiles" randomProfiles
 
 
 randomCuckooNest = do
@@ -29,11 +33,25 @@ randomCuckooNest = do
       , ( "secondary_email", "email" )
       ]
 
-    encodeObject :: CuckooPairs -> M.Map String Cuckoo
-    encodeObject = M.fromList
-
   case maybeConfigs of
     Just configs -> do
       (nest, nextG) <- liftIO $ runFake (cuckooBarrage configs 5) g
       json $ map encodeObject nest
     Nothing -> text $ TL.pack "Bad Config"
+
+randomProfiles = do
+  g <- liftIO newStdGen
+  let
+    configs =
+      [ ("fullname", CuckooString <$> fakeFullname)
+      , ("home_address", CuckooString <$> fakeAddress)
+      , ("job_title", CuckooString <$> fakeJobTitle)
+      , ("current_employer", CuckooString <$> fakeCompany)
+      ]
+  (nest, _nextG) <- liftIO $ runFake (cuckooBarrage configs 5) g
+
+  json $ map encodeObject nest
+
+
+encodeObject :: CuckooPairs -> M.Map String Cuckoo
+encodeObject = M.fromList

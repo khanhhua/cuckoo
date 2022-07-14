@@ -8,6 +8,7 @@ module CuckooLib (
   fakeFullname,
   fakeStreetName,
   fakeStateName,
+  fakeAddress,
   fakeJobTitle,
   fakeCompany,
   fakeDomain,
@@ -73,11 +74,18 @@ fakeFirstName = fakeString "data/first-names.txt"
 
 fakeFamilyName = fakeString "data/family-names.txt"
 
-fakeFullname = (\(fname : lname : _) -> fname <> lname ) <$> sequenceA [fakeFirstName, fakeFamilyName]
+fakeFullname = (\fname lname -> fname <> " " <> lname ) <$> fakeFirstName <*> fakeFamilyName
 
 fakeStreetName = fakeString "data/street-names.txt"
 
 fakeStateName = fakeString "data/state-names.txt"
+
+fakeAddress :: Fake String
+fakeAddress = f <$> fakeNumber (1 :: Int, 999) <*> fakeStreetName <*> fakeStateName
+  where
+    f :: String -> String -> String -> String
+    f number streetName stateName =
+      printf "%s %s, %s" number streetName stateName
 
 fakeJobTitle = fakeString "data/jobs.txt"
 
