@@ -2,6 +2,7 @@
 
 module CuckooLib (
   Fake(..),
+  Cuckoo(..),
   fakeString,
   fakeNumber,
   fakePhone,
@@ -27,6 +28,25 @@ import Data.Time.Clock
 import System.Random
 import System.Random.Stateful
 import Text.Printf
+import Data.Map (fromList, Map)
+import Data.Aeson ( ToJSON(toJSON) )
+
+
+data Cuckoo
+  = CuckooString String
+  | CuckooInt Int
+  | CuckooMap (Map String Cuckoo)
+
+instance ToJSON Cuckoo where
+  toJSON (CuckooString s) = toJSON s
+  toJSON (CuckooInt i)    = toJSON i
+  toJSON (CuckooMap m)   = toJSON m
+
+instance Show Cuckoo where
+    show (CuckooString s) = show s
+    show (CuckooInt i)    = show i
+    show (CuckooMap m)   = show m
+
 
 newtype Fake a = Fake
   { runFake :: StdGen -> IO (a, StdGen)

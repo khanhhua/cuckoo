@@ -2,19 +2,9 @@ module CuckooNest where
 
 import Control.Monad.State.Lazy
 import CuckooLib
-import Data.Aeson
+import Data.Map (fromList, Map)
+import Graph (Graph(..))
 
-data Cuckoo
-  = CuckooString String
-  | CuckooInt Int
-
-instance ToJSON Cuckoo where
-  toJSON (CuckooString s) = toJSON s
-  toJSON (CuckooInt i)    =  toJSON i
-
-instance Show Cuckoo where
-    show (CuckooString s) = show s
-    show (CuckooInt i)    = show i
 
 type Config = (String, Fake Cuckoo)
 
@@ -31,14 +21,15 @@ tableOfCuckoos =
   , ( "email", CuckooString <$> fakeEmail )
   , ( "address", CuckooString <$> fakeAddress )
   , ( "past-date", CuckooString <$> fakePastDate )
+  , ( "company", CuckooString <$> fakeCompany )
+  , ( "domain", CuckooString <$> fakeDomain )
   ]
 
+lookupCuckooGen :: String -> Maybe (Fake Cuckoo)
 lookupCuckooGen = flip lookup tableOfCuckoos
 
--- traverse == sequenceA . map
-config :: [(String, String)] -> Maybe [(String, Fake Cuckoo)]
-config = traverse (\(label, cuckooName) -> (label,) <$> lookupCuckooGen cuckooName)
-
+config :: Graph String -> Maybe (Graph (Fake Cuckoo))
+config = traverse lookupCuckooGen
 
 cuckooNest :: [Config] -> Fake CuckooPairs
 cuckooNest configs = Fake . runFake $ sequenceA applicatives
@@ -48,3 +39,19 @@ cuckooNest configs = Fake . runFake $ sequenceA applicatives
 
 cuckooBarrage :: [Config] -> Int -> Fake [CuckooPairs]
 cuckooBarrage configs n = replicateM n (cuckooNest configs)
+
+
+newtype CuckooGraph = Graph (Fake Cuckoo)
+
+object :: [(String, Graph String)] -> Graph String
+object = Object . fromList
+
+
+{- Generate a configuration graph from string graph
+>>> template = object
+-}
+fromTemplate :: Graph String -> Maybe (Graph (Fake Cuckoo))
+fromTemplate = traverse lookupCuckooGen
+
+fakeGraph :: Graph (Fake Cuckoo) -> Fake (Graph Cuckoo)
+fakeGraph configs = Fake $ runFake (sequenceA configs)
