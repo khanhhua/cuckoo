@@ -23,6 +23,7 @@ tableOfCuckoos =
   , ( "past-date", CuckooString <$> fakePastDate )
   , ( "company", CuckooString <$> fakeCompany )
   , ( "domain", CuckooString <$> fakeDomain )
+  , ( "job-title", CuckooString <$> fakeJobTitle )
   ]
 
 lookupCuckooGen :: String -> Maybe (Fake Cuckoo)
@@ -48,10 +49,6 @@ object = Object . fromList
 
 
 {- Generate a configuration graph from string graph
->>> template = object
 -}
 fromTemplate :: Graph String -> Maybe (Graph (Fake Cuckoo))
 fromTemplate = traverse lookupCuckooGen
-
-fakeGraph :: Graph (Fake Cuckoo) -> Fake (Graph Cuckoo)
-fakeGraph configs = Fake $ runFake (sequenceA configs)
