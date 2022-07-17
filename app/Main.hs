@@ -1,7 +1,8 @@
-{-#LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Main where
 
-import Control.Monad (replicateM)
+import           Control.Monad
+    (replicateM)
 import           Control.Monad.IO.Class
 import qualified Data.Map                as M
     (Map, fromList, toList)
@@ -14,7 +15,7 @@ import Web.Scotty
 import CuckooLib
     (Cuckoo (..), fakeAddress, fakeCompany, fakeFullname, fakeJobTitle, runFake)
 import CuckooNest
-    (CuckooPairs, config, cuckooBarrage, cuckooNest, object, fromTemplate)
+    (CuckooPairs, config, cuckooBarrage, cuckooNest, fromTemplate, object)
 import Graph
 
 
@@ -31,7 +32,7 @@ customGenerator = do
   ```
   config :: Maybe (Graph (Fake Cuckoo)) <- fromTemplate <$> jsonData
   ```
-  -} 
+  -}
   template :: Graph String <- jsonData
   let
     config = fromTemplate template

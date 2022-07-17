@@ -2,8 +2,10 @@ module CuckooNest where
 
 import Control.Monad.State.Lazy
 import CuckooLib
-import Data.Map (fromList, Map)
-import Graph (Graph(..))
+import Data.Map
+    (Map, fromList)
+import Graph
+    (Graph (..))
 
 
 type Config = (String, Fake Cuckoo)
