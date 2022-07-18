@@ -34,17 +34,6 @@ lookupCuckooGen = flip lookup tableOfCuckoos
 config :: Graph String -> Maybe (Graph (Fake Cuckoo))
 config = traverse lookupCuckooGen
 
-cuckooNest :: [Config] -> Fake CuckooPairs
-cuckooNest configs = Fake . runFake $ sequenceA applicatives
-  where
-    applicatives = map asApplicative configs
-
-
-cuckooBarrage :: [Config] -> Int -> Fake [CuckooPairs]
-cuckooBarrage configs n = replicateM n (cuckooNest configs)
-
-
-newtype CuckooGraph = Graph (Fake Cuckoo)
 
 object :: [(String, Graph String)] -> Graph String
 object = Object . fromList
