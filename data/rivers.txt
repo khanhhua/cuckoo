@@ -1,15 +1,14 @@
 Nile
 Amazon
 Mississippi
-Red Rock"
-Chang Jiang (Yangtze)
+Red Rock
+Chang Jiang
 Ob
-Huang He (Yellow)
+Huang He
 Yenisei
-Paraná
 Irtish
-Zaire (Congo)
-Heilong (Amur)
+Zaire
+Heilong
 Lena
 Mackenzie
 Niger
@@ -18,9 +17,7 @@ Missouri
 Volga
 Madeira
 Purus
-São Francisco
 Yukon
-St. Lawrence
 Rio Grande
 Brahmaputra
 Indus
@@ -34,18 +31,17 @@ Nelson
 Paraguay
 Ural
 Ganges
-Amu Darya (Oxus)
-Japurá
+Amu Darya
 Salween
 Arkansas
 Colorado
 Dnieper
-Ohio-Allegheny
+Ohio Allegheny
 Irrawaddy
 Orange
 Orinoco
 Pilcomayo
-Xi Jiang (Si Kiang)
+Xi Jiang
 Columbia
 Don
 Sungari
@@ -62,7 +58,7 @@ Honshu
 Great Britain
 Victoria Island
 Ellesmere Island
-Sulawesi(Celebes)
+Sulawesi
 South Island
 Java
 North Island
@@ -73,11 +69,11 @@ Iceland
 Mindanao
 Ireland
 Hokkaido
-Sakhalin(Karafuto)
+Sakhalin
 Hispaniola
 Banks
 Tasmania
-Sri Lanka(Ceylon)
+Sri Lanka
 Devon
 Tierra del Fuego
 Axel Heiberg

@@ -26,6 +26,7 @@ tableOfCuckoos =
   , ( "company", CuckooString <$> fakeCompany )
   , ( "domain", CuckooString <$> fakeDomain )
   , ( "job-title", CuckooString <$> fakeJobTitle )
+  , ( "river", CuckooString <$> fakeRiver )
   ]
 
 lookupCuckooGen :: String -> Maybe (Fake Cuckoo)
