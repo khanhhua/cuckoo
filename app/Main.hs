@@ -15,7 +15,7 @@ import Web.Scotty
 import CuckooLib
     (Cuckoo (..), fakeAddress, fakeCompany, fakeFullname, fakeJobTitle, runFake)
 import CuckooNest
-    (CuckooPairs, config, cuckooBarrage, cuckooNest, fromTemplate, object)
+    (CuckooPairs, config, fromTemplate, object)
 import Graph
 
 
