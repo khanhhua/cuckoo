@@ -54,8 +54,6 @@ generateRandomJson config n =
   case config of
     Nothing         ->
       text $ TL.pack "Bad Config"
-    Just Empty      ->
-      text $ TL.pack "Faker Not Found"
     Just goodConfig -> do
       g <- liftIO newStdGen
       let

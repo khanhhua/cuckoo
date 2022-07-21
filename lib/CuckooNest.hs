@@ -2,6 +2,19 @@ module CuckooNest where
 
 import Control.Monad.State.Lazy
 import CuckooLib
+    ( fakeAddress,
+      fakeCompany,
+      fakeDomain,
+      fakeEmail,
+      fakeFamilyName,
+      fakeFirstName,
+      fakeFullname,
+      fakeJobTitle,
+      fakePastDate,
+      fakeAnimal,
+      fakeRiver,
+      Cuckoo(CuckooString),
+      Fake )
 import Data.Map
     (Map, fromList)
 import Graph
@@ -26,6 +39,7 @@ tableOfCuckoos =
   , ( "company", CuckooString <$> fakeCompany )
   , ( "domain", CuckooString <$> fakeDomain )
   , ( "job-title", CuckooString <$> fakeJobTitle )
+  , ( "animal", CuckooString <$> fakeAnimal)
   , ( "river", CuckooString <$> fakeRiver )
   ]
 
